@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Any
 import concurrent.futures
 import asyncio
 
-BASE_API = "https://marrfa-chatbot-new-1.onrender.com/api"
+BASE_API = st.secrets.get("BASE_API", "https://marrfa-chatbot-new-1.onrender.com/api")
 
 st.set_page_config(page_title="Marrfa AI", page_icon="🏙️", layout="wide")
 
@@ -560,3 +560,4 @@ with st.sidebar:
     if message_count > 0:
 
         st.caption(f"💬 {message_count} messages in chat")
+
