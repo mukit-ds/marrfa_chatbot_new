@@ -1,28 +1,38 @@
+import os
 import streamlit as st
 import requests
 import uuid
 import time
-from streamlit_mic_recorder import mic_recorder
 import re
 from typing import Optional, List, Dict, Any
 import concurrent.futures
 import asyncio
 
-import os
-import streamlit as st
+# Optional mic recorder (won't crash if missing)
+try:
+    from streamlit_mic_recorder import mic_recorder
+    MIC_OK = True
+except Exception:
+    MIC_OK = False
 
 def get_secret(key: str, default=None):
-    # Render / local env
-    val = os.getenv(key, default)
-    # Streamlit Cloud secrets (if configured)
-    try:
-        return st.secrets.get(key, val)
-    except Exception:
+    # 1) Prefer normal environment variables (Render/local)
+    val = os.getenv(key)
+    if val is not None and str(val).strip() != "":
         return val
+
+    # 2) Only try Streamlit secrets if they exist (Streamlit Cloud)
+    try:
+        # Accessing st.secrets can raise if no secrets file/dir exists
+        secrets = st.secrets  # triggers parsing
+        return secrets.get(key, default)
+    except Exception:
+        return default
 
 BASE_API = get_secret("BASE_API", "https://marrfa-chatbot-new-1.onrender.com/api")
 
 st.set_page_config(page_title="Marrfa AI", page_icon="🏙️", layout="wide")
+
 
 # --- Initialize Session State ---
 if "authenticated" not in st.session_state:
@@ -572,5 +582,6 @@ with st.sidebar:
     if message_count > 0:
 
         st.caption(f"💬 {message_count} messages in chat")
+
 
 
