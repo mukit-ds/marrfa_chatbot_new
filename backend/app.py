@@ -8,7 +8,19 @@ from typing import Optional, List, Dict, Any
 import concurrent.futures
 import asyncio
 
-BASE_API = st.secrets.get("BASE_API", "https://marrfa-chatbot-new-1.onrender.com/api")
+import os
+import streamlit as st
+
+def get_secret(key: str, default=None):
+    # Render / local env
+    val = os.getenv(key, default)
+    # Streamlit Cloud secrets (if configured)
+    try:
+        return st.secrets.get(key, val)
+    except Exception:
+        return val
+
+BASE_API = get_secret("BASE_API", "https://marrfa-chatbot-new-1.onrender.com/api")
 
 st.set_page_config(page_title="Marrfa AI", page_icon="🏙️", layout="wide")
 
@@ -560,4 +572,5 @@ with st.sidebar:
     if message_count > 0:
 
         st.caption(f"💬 {message_count} messages in chat")
+
 
