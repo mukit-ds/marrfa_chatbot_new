@@ -161,3 +161,6 @@ zipp==3.23.0
 zstandard==0.25.0
 streamlit
 requests
+streamlit
+requests
+streamlit-mic-recorder
